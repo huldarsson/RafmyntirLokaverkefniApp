@@ -3,8 +3,16 @@ import 'package:flutter/rendering.dart';
 
 class Login extends StatefulWidget {
   final Function connect;
+  final Function setLoginLoading;
+  final bool loginLoading;
+  final Function setCurrentContext;
 
-  Login({this.connect});
+  Login({
+    this.connect,
+    this.setLoginLoading,
+    this.loginLoading,
+    this.setCurrentContext
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -16,6 +24,7 @@ class LoginState extends State<Login> {
   String username;
   final _formKey = GlobalKey<FormState>();
 
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,7 +96,8 @@ class LoginState extends State<Login> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                MaterialButton(
+
+                widget.loginLoading ? CircularProgressIndicator() : MaterialButton(
                   color: Colors.redAccent,
                   shape: StadiumBorder(),
                   minWidth: 300,
@@ -98,11 +108,9 @@ class LoginState extends State<Login> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
+                      widget.setCurrentContext(context);
                       widget.connect(username);
-                      Navigator.pushNamedAndRemoveUntil(context, '/compass',
-                          (_) {
-                        return false;
-                      });
+                      widget.setLoginLoading(true);
                     }
                   },
                 )
